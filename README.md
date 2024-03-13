@@ -17,6 +17,12 @@ sudo docker exec -it container_number /bin/bash ;
 psql -d user_db -U propertease ;
 ```
 
+#### Pre-requirements
+```bash
+sudo apt-get install libpq-dev python-dev
+```
+
+
 #### Setup venv
 ```bash
 python -m venv venv;
