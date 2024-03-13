@@ -16,8 +16,6 @@ sudo docker run --env-file .env -d --name my-postgresdb-container -p 5432:5432 m
 sudo docker exec -it container_number /bin/bash ;
 psql -d user_db -U propertease ;
 ```
-sudo docker exec -it container_number /bin/bash
-psql -d user_db -U propertease
 
 #### Setup venv
 ```bash
