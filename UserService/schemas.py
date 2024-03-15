@@ -1,21 +1,8 @@
 from pydantic import BaseModel
 
 
-class ItemBase(BaseModel):
+class Service(BaseModel):
     title: str
-    description: str | None = None
-
-
-class ItemCreate(ItemBase):
-    pass
-
-
-class Item(ItemBase):
-    id: int
-    owner_id: int
-
-    class Config:
-        orm_mode = True
 
 
 class UserBase(BaseModel):
@@ -24,12 +11,13 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    first_name: str
+    last_name: str
+    phone_number: str
 
 
 class User(UserBase):
-    id: int
-    is_active: bool
-    items: list[Item] = []
-
-    class Config:
-        orm_mode = True
+    first_name: str
+    last_name: str
+    phone_number: str
+    connected_services: list[Service]
