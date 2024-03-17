@@ -1,7 +1,17 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum
+from sqlalchemy.dialects.postgresql import ARRAY
+from enum import Enum as EnumType
 from .database import Base
+
+
+class Service(EnumType):
+    AIRBNB = "airbnb"
+    BOOKING = "booking"
+
+
+class UserRole(EnumType):
+    ADMIN = "admin"
+    CUSTOMER = "customer"
 
 
 class User(Base):
@@ -9,18 +19,6 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-
-    items = relationship("Item", back_populates="owner")
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-
-    owner = relationship("User", back_populates="items")
+    role = Column(Enum(UserRole), default=UserRole.CUSTOMER)
+    connected_services = Column(ARRAY(Enum(Service)), default=[])
+    # is_active = Column(Boolean, default=True) # Do we need this?
