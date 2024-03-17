@@ -1,15 +1,15 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Enum
 from sqlalchemy.dialects.postgresql import ARRAY
-from enum import Enum as Enumtype
+from enum import Enum as EnumType
 from .database import Base
 
 
-class Service(Enumtype):
+class Service(EnumType):
     AIRBNB = "airbnb"
     BOOKING = "booking"
 
 
-class UserRole(Enumtype):
+class UserRole(EnumType):
     ADMIN = "admin"
     CUSTOMER = "customer"
 

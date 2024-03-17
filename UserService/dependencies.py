@@ -16,7 +16,7 @@ def get_db():
         db.close()
 
 
-def get_user(res: Response, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))):
+def decode_token(cred: HTTPAuthorizationCredentials):
     if cred is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -24,21 +24,26 @@ def get_user(res: Response, cred: HTTPAuthorizationCredentials = Depends(HTTPBea
             headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
         )
     try:
-        decoded_token = auth.verify_id_token(cred.credentials)
+        return auth.verify_id_token(cred.credentials)
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid authentication credentials. {err}",
             headers={'WWW-Authenticate': 'Bearer error="invalid_token"'},
         )
+
+
+def get_user(res: Response, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))):
+    decoded_token = decode_token(cred)
     res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
     return UserBase(**decoded_token)
 
 
-def is_user_admin(res: Response, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)), db: Session = Depends(get_db)):
-    user: UserBase = get_user(res, cred)
+def is_user_admin(res: Response, cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+                  db: Session = Depends(get_db)):
+    decoded_token = decode_token(cred)
     res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
+    user = UserBase(**decoded_token)
     db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user.role != UserRole.ADMIN:
+    if db_user is None or db_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-

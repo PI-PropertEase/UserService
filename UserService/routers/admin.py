@@ -24,7 +24,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 @router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
-    print(db_user)
     if db_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
+    crud.delete_user(db, db_user=db_user)
