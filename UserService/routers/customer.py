@@ -5,10 +5,10 @@ from UserService.dependencies import get_user, get_db
 from UserService.schemas import UserBase
 
 # deny by default
-cust_router = APIRouter(dependencies=[Depends(get_user)])
+router = APIRouter(dependencies=[Depends(get_user)])
 
 
-@cust_router.post("/users/", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
+@router.post("/users/", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
@@ -16,9 +16,9 @@ def create_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db
     return crud.create_user(db=db, user=user)
 
 
-@cust_router.get("/users/", response_model=schemas.User)
-def read_user(token: UserBase = Depends(get_user), db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=token.email)
+@router.get("/users/", response_model=schemas.User)
+def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.email)
     if db_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return db_user

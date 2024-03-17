@@ -10,6 +10,5 @@ firebase_admin.initialize_app(cred)
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
-app.include_router(customer.cust_router)
-app.include_router(admin.admin_router)
-
+app.include_router(customer.router, tags=["cust"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])

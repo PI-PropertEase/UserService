@@ -10,4 +10,5 @@ class UserBase(BaseModel):
 
 
 class User(UserBase):
+    id: int
     connected_services: list[Service]
