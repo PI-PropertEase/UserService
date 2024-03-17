@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from . import models, schemas
 
 
@@ -15,14 +14,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(
-        email=user.email,
-        hashed_password=user.password + "notreallyhashed",
-        first_name=user.first_name,
-        last_name=user.last_name,
-        phone_number=user.phone_number
-    )
+def create_user(db: Session, user: schemas.UserBase):
+    db_user = models.User(email=user.email)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
