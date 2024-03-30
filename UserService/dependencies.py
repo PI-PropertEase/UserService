@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from ProjectUtils.DecoderService.decode_token import decode_token
 from UserService import crud
 from UserService.database import SessionLocal
-from UserService.models import UserRole
-from UserService.schemas import UserBase
+from ProjectUtils.MessagingService.user_schemas import UserBase
+from UserService import models
 
 
 def get_db():
@@ -25,5 +25,5 @@ def is_user_admin(res: Response, cred: HTTPAuthorizationCredentials = Depends(HT
                   db: Session = Depends(get_db)):
     user = get_user(res, cred)
     db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user is None or db_user.role != UserRole.ADMIN:
+    if db_user is None or db_user.role != models.UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
-from .models import User
+from ProjectUtils.MessagingService.user_schemas import UserBase
+from . import models
 
 
 def get_user(db: Session, user_id: int):
@@ -15,7 +15,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schemas.UserBase):
+def create_user(db: Session, user: UserBase):
     db_user = models.User(email=user.email)
     db.add(db_user)
     db.commit()
@@ -23,7 +23,6 @@ def create_user(db: Session, user: schemas.UserBase):
     return db_user
 
 
-def delete_user(db: Session, db_user: User ):
+def delete_user(db: Session, db_user: models.User):
     db.delete(db_user)
     db.commit()
-
