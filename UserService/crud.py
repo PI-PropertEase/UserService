@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ProjectUtils.MessagingService.user_schemas import UserBase
+from UserService.schemas import UserBase
 from . import models
 
 

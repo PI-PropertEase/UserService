@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from UserService import crud
 from UserService.dependencies import get_user, get_db
 from UserService.messaging_operations import publish_new_user
-from ProjectUtils.MessagingService.user_schemas import UserBase, User
+from UserService.schemas import UserBase, User
 
 # deny by default
 router = APIRouter(dependencies=[Depends(get_user)])

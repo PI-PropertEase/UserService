@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ProjectUtils.DecoderService.decode_token import decode_token
 from UserService import crud
 from UserService.database import SessionLocal
-from ProjectUtils.MessagingService.user_schemas import UserBase
+from UserService.schemas import UserBase
 from UserService import models
 
 

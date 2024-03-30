@@ -2,7 +2,7 @@ import pika
 
 from ProjectUtils.MessagingService.queue_definitions import channel, EXCHANGE_NAME
 from ProjectUtils.MessagingService.schemas import create_message, UserMessage, UserType
-from ProjectUtils.MessagingService.user_schemas import UserBase
+from UserService.schemas import UserBase
 
 
 def publish_new_user(user: UserBase):

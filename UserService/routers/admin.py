@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from UserService import crud
 from UserService.dependencies import get_db, is_user_admin
-from ProjectUtils.MessagingService.user_schemas import User
+from UserService.schemas import User
 
 # deny by default
 router = APIRouter(dependencies=[Depends(is_user_admin)])
