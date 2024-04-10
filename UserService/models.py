@@ -5,8 +5,7 @@ from .database import Base
 
 
 class Service(EnumType):
-    AIRBNB = "airbnb"
-    BOOKING = "booking"
+    ZOOKING = "zooking"
 
 
 class UserRole(EnumType):
