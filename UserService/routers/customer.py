@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from UserService import crud
 from UserService.dependencies import get_user, get_db
-from UserService.messaging_operations import publish_new_user
+from UserService.messaging_operations import publish_new_user, publish_import_properties
 from UserService.schemas import UserBase, User, Service
 from UserService.models import Service as ServiceEnum
 
@@ -38,6 +38,8 @@ def connect_to_service(
         )
     db_user.connected_services.append(ServiceEnum(service.title.value))
     ret_user = crud.update_user(db=db, updated_user=db_user)
+
+    publish_import_properties(service.title, user)
 
     # convert "models.Service[]" type to "schemas.Service[]" type for serialization
     ret_user.connected_services = [
