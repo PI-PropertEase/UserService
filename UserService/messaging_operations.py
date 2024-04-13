@@ -44,7 +44,7 @@ async def publish_new_user(user: UserBase):
     global async_exchange
     await async_exchange.publish(
         routing_key=USER_QUEUE_ROUTING_KEY,
-        message=~Message(
+        message=Message(
             body=to_json(
                 MessageFactory.create_user_message(MessageType.USER_CREATE, user)
             ).encode()
