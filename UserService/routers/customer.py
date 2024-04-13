@@ -11,18 +11,18 @@ router = APIRouter(dependencies=[Depends(get_user)])
 
 
 @router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED)
-def create_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
+async def create_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
     if crud.get_user_by_email(db, email=user.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
     db_user = crud.create_user(db=db, user=user)
-    publish_new_user(user)
+    await publish_new_user(user)
     return db_user
 
 
 @router.post("/services", response_model=User, status_code=status.HTTP_201_CREATED)
-def connect_to_service(
+async def connect_to_service(
     service: Service, user: UserBase = Depends(get_user), db: Session = Depends(get_db)
 ):
     db_user = crud.get_user_by_email(db, email=user.email)
@@ -39,7 +39,7 @@ def connect_to_service(
     db_user.connected_services.append(ServiceEnum(service.title.value))
     ret_user = crud.update_user(db=db, updated_user=db_user)
 
-    publish_import_properties(service.title, user)
+    await publish_import_properties(service.title, user)
 
     # convert "models.Service[]" type to "schemas.Service[]" type for serialization
     ret_user.connected_services = [
