@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 from UserService.schemas import UserBase
 from . import models
 
@@ -26,3 +27,12 @@ def create_user(db: Session, user: UserBase):
 def delete_user(db: Session, db_user: models.User):
     db.delete(db_user)
     db.commit()
+
+
+def update_user(db: Session, updated_user: models.User):
+    db.query(models.User).filter(models.User.id == updated_user.id).update(
+        {models.User.connected_services: updated_user.connected_services}
+    )
+    db.commit()
+    db.refresh(updated_user)
+    return updated_user
