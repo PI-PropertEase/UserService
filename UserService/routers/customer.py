@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from UserService import crud
 from UserService.dependencies import get_user, get_db
 from UserService.messaging_operations import publish_new_user, publish_import_properties
-from UserService.schemas import UserBase, User, Service
+from UserService.schemas import UserBase, User, Service, pydantic_service_from_db_service
 from UserService.models import Service as ServiceEnum
 
 # deny by default
@@ -43,7 +43,7 @@ def connect_to_service(
 
     # convert "models.Service[]" type to "schemas.Service[]" type for serialization
     ret_user.connected_services = [
-        Service(title=s) for s in ret_user.connected_services
+        pydantic_service_from_db_service(db_s) for db_s in ret_user.connected_services
     ]
     return ret_user
 
@@ -55,6 +55,7 @@ def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db))
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    db_user.connected_services = [pydantic_service_from_db_service(db_service) for db_service in db_user.connected_services]
     return db_user
 
 

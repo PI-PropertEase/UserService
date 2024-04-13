@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from enum import Enum
+from .models import Service as DBService
 
 
 class AvailableService(str, Enum):
@@ -17,3 +18,7 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: int
     connected_services: list[Service]
+
+
+def pydantic_service_from_db_service(db_service: DBService) -> Service:
+    return Service(title=db_service.value)
