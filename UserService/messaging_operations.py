@@ -21,7 +21,7 @@ async_exchange = None
 
 
 async def init_publisher(loop):
-    connection = await connect_robust(host="localhost", loop=loop)
+    connection = await connect_robust(host="rabbit_mq", loop=loop)
 
     global async_channel
 
