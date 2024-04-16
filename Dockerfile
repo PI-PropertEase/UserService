@@ -1,7 +1,8 @@
 FROM python:3.11.9-bookworm
 
-COPY . /app
 WORKDIR /app
+
+COPY requirements.txt .
 
 RUN apt-get -y update \
   && apt-get -y install libpq-dev python3-dev \
