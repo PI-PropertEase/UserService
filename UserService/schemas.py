@@ -5,6 +5,8 @@ from .models import Service as DBService
 
 class AvailableService(str, Enum):
     ZOOKING = "zooking"
+    CLICKANDGO = "ClickAndGo"
+    EARTHSTAYIN = "Earthstayin"
 
 
 class Service(BaseModel):

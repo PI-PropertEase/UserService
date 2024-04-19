@@ -6,13 +6,17 @@ from ProjectUtils.MessagingService.queue_definitions import (
     USER_QUEUE_ROUTING_KEY,
     WRAPPER_ZOOKING_ROUTING_KEY,
     USER_QUEUE_NAME,
+    WRAPPER_CLICKANDGO_ROUTING_KEY,
+    WRAPPER_EARTHSTAYIN_ROUTING_KEY
 )
 from ProjectUtils.MessagingService.schemas import to_json, MessageFactory, MessageType
 from UserService.schemas import UserBase, AvailableService, Service
 
 # map from service name to its RabbitMQ routing key
 service_to_routing_key = {
-    AvailableService.ZOOKING: WRAPPER_ZOOKING_ROUTING_KEY
+    AvailableService.ZOOKING: WRAPPER_ZOOKING_ROUTING_KEY,
+    AvailableService.CLICKANDGO: WRAPPER_CLICKANDGO_ROUTING_KEY,
+    AvailableService.EARTHSTAYIN: WRAPPER_EARTHSTAYIN_ROUTING_KEY
 }
 
 channel.close()  # TODO: fix in the future
