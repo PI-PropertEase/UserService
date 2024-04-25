@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Depends
+from UserService.dependencies import get_db
 from .database import engine
 from . import models
 from contextlib import asynccontextmanager
@@ -8,11 +9,15 @@ from .routers import customer, admin
 from fastapi.middleware.cors import CORSMiddleware
 from .messaging_operations import init_publisher
 import asyncio
+from sqlalchemy.orm import Session
+from .scheduled_events import schedule_reservations_import
+
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI, db: Session = Depends(get_db)):
     loop = asyncio.get_event_loop()
-    asyncio.ensure_future(init_publisher(loop))
+    await asyncio.ensure_future(init_publisher(loop))
+    asyncio.ensure_future(schedule_reservations_import())
     yield
 
 cred = credentials.Certificate(".secret.json")
