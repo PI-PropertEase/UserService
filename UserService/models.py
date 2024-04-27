@@ -6,8 +6,8 @@ from .database import Base
 
 class Service(EnumType):
     ZOOKING = "zooking"
-    CLICKANDGO = "ClickAndGo"
-    EARTHSTAYIN = "Earthstayin"
+    CLICKANDGO = "clickandgo"
+    EARTHSTAYIN = "earthstayin"
 
 
 class UserRole(EnumType):

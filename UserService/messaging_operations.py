@@ -66,7 +66,6 @@ async def publish_import_properties(service: AvailableService, user: UserBase):
 
 async def publish_import_reservations(users: list[UserBase]):
     global async_exchange
-
     await async_exchange.publish(
         routing_key=WRAPPER_BROADCAST_ROUTING_KEY,
         message=to_json_aoi_bytes(MessageFactory.create_import_reservations_message(users)),
