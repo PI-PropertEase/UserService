@@ -14,7 +14,7 @@ from .scheduled_events import schedule_reservations_import
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI, db: Session = Depends(get_db)):
+async def lifespan(app: FastAPI):
     loop = asyncio.get_event_loop()
     await asyncio.ensure_future(init_publisher(loop))
     asyncio.ensure_future(schedule_reservations_import())
