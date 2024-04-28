@@ -3,13 +3,14 @@ from aio_pika import connect_robust, ExchangeType, Message
 from ProjectUtils.MessagingService.queue_definitions import (
     channel,
     EXCHANGE_NAME,
+    USER_QUEUE_NAME,
     USER_QUEUE_ROUTING_KEY,
     WRAPPER_ZOOKING_ROUTING_KEY,
-    USER_QUEUE_NAME,
     WRAPPER_CLICKANDGO_ROUTING_KEY,
-    WRAPPER_EARTHSTAYIN_ROUTING_KEY
+    WRAPPER_EARTHSTAYIN_ROUTING_KEY,
+    WRAPPER_BROADCAST_ROUTING_KEY
 )
-from ProjectUtils.MessagingService.schemas import to_json, MessageFactory, MessageType
+from ProjectUtils.MessagingService.schemas import to_json, MessageFactory, MessageType, to_json_aoi_bytes
 from UserService.schemas import UserBase, AvailableService, Service
 
 # map from service name to its RabbitMQ routing key
@@ -46,24 +47,26 @@ async def init_publisher(loop):
 
 async def publish_new_user(user: UserBase):
     global async_exchange
+
     await async_exchange.publish(
         routing_key=USER_QUEUE_ROUTING_KEY,
-        message=Message(
-            body=to_json(
-                MessageFactory.create_user_message(MessageType.USER_CREATE, user)
-            ).encode()
-        ),
+        message=to_json_aoi_bytes(MessageFactory.create_user_message(MessageType.USER_CREATE, user)),
     )
 
 
 async def publish_import_properties(service: AvailableService, user: UserBase):
-    routing_key = service_to_routing_key.get(service)
-
     global async_exchange
+
+    routing_key = service_to_routing_key.get(service)
 
     await async_exchange.publish(
         routing_key=routing_key,
-        message=Message(
-            body=to_json(MessageFactory.create_import_properties_message(user)).encode()
-        ),
+        message=to_json_aoi_bytes(MessageFactory.create_import_properties_message(user)),
+    )
+
+async def publish_import_reservations(users: list[UserBase]):
+    global async_exchange
+    await async_exchange.publish(
+        routing_key=WRAPPER_BROADCAST_ROUTING_KEY,
+        message=to_json_aoi_bytes(MessageFactory.create_import_reservations_message(users)),
     )
