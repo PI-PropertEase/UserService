@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .messaging_operations import init_publisher
 import asyncio
 from sqlalchemy.orm import Session
-from .scheduled_events import schedule_reservations_import
+from .scheduled_events import schedule_reservations_import, schedule_properties_import
 
 
 @asynccontextmanager
@@ -18,6 +18,7 @@ async def lifespan(app: FastAPI):
     loop = asyncio.get_event_loop()
     await asyncio.ensure_future(init_publisher(loop))
     asyncio.ensure_future(schedule_reservations_import())
+    asyncio.ensure_future(schedule_properties_import())
     yield
 
 cred = credentials.Certificate(".secret.json")

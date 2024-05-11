@@ -70,3 +70,10 @@ async def publish_import_reservations(users: list[UserBase]):
         routing_key=WRAPPER_BROADCAST_ROUTING_KEY,
         message=to_json_aoi_bytes(MessageFactory.create_import_reservations_message(users)),
     )
+
+async def publish_scheduled_import_properties(users: list[UserBase]):
+    global async_exchange
+    await async_exchange.publish(
+        routing_key=WRAPPER_BROADCAST_ROUTING_KEY,
+        message=to_json_aoi_bytes(MessageFactory.create_scheduled_properties_import_message(users)),
+    )
