@@ -21,4 +21,4 @@ async def schedule_properties_import():
             print("Sending scheduled import properties message...")
             all_emails = get_users(db)
             await publish_scheduled_import_properties(all_emails)
-            await asyncio.sleep(5)
+            await asyncio.sleep(41)
