@@ -5,7 +5,7 @@ from UserService.dependencies import get_db
 from .database import engine
 from . import models
 from contextlib import asynccontextmanager
-from .routers import customer, admin
+from .routers import customer
 from fastapi.middleware.cors import CORSMiddleware
 from .messaging_operations import init_publisher
 import asyncio
@@ -42,4 +42,3 @@ def get_health():
     return {"status": "ok"}
 
 app.include_router(customer.router, tags=["cust"])
-app.include_router(admin.router, prefix="/admin", tags=["admin"])
