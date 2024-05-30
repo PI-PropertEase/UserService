@@ -91,10 +91,14 @@ def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db))
             summary="List all available listing services",
             description="Get a list of all available listing services that can be connected to.",
             responses={
+                status.HTTP_200_OK: {
+                    "description": "List all available listing services",
+                    "content": {"application/json": {"example": [{"title": "zooking"}, {"title": "clickandgo"}, {"title": "earthstayin"}]}}
+                },
                 status.HTTP_404_NOT_FOUND: {
                     "description": "No services available",
                     "content": {"application/json": {"example": {"detail": "No services available"}}}
-                }
+                },
             })
 def get_available_services():
     available_services = [Service(title=s.value) for s in ServiceEnum]
