@@ -26,7 +26,15 @@ firebase_admin.initialize_app(cred)
 
 
 models.Base.metadata.create_all(bind=engine)
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    root_path="/api/UserService",
+    title="UserService",
+    description="The User Service exposes many endpoints for handling user account creation/signing in, and \
+        connecting users to external listing services. It also triggers workflows related to importing \
+        external data, such as scheduled messages for importing new properties and new reservations.",
+    version="1.0.0"
+)
 
 # CORS setup
 app.add_middleware(
@@ -41,4 +49,4 @@ app.add_middleware(
 def get_health():
     return {"status": "ok"}
 
-app.include_router(customer.router, tags=["cust"])
+app.include_router(customer.router, tags=["Client"])
