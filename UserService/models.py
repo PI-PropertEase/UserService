@@ -10,16 +10,9 @@ class Service(EnumType):
     EARTHSTAYIN = "earthstayin"
 
 
-class UserRole(EnumType):
-    ADMIN = "admin"
-    CUSTOMER = "customer"
-
-
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
-    role = Column(Enum(UserRole), default=UserRole.CUSTOMER)
     connected_services = Column(ARRAY(Enum(Service)), default=[])
-    # is_active = Column(Boolean, default=True) # Do we need this?

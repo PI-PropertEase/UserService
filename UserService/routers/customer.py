@@ -10,7 +10,23 @@ from UserService.models import Service as ServiceEnum
 router = APIRouter(dependencies=[Depends(get_user)])
 
 
-@router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/users", response_model=User, status_code=status.HTTP_201_CREATED,
+             summary="Create a new user account", 
+             description="Create a new user account, given the bearer token received from Firebase authentication.",
+             responses={
+                 status.HTTP_201_CREATED: {
+                     "description": "Successful Response",
+                     "content": {"application/json": {"example": {
+                         "email": "user@example.com",
+                         "id": 0,
+                         "connected_services": []
+                     }}}
+                 },
+                 status.HTTP_400_BAD_REQUEST: {
+                     "description": "Email already registered",
+                     "content": {"application/json": {"example": {"detail": "Email already registered"}}}
+                 }
+             })
 async def create_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
     if crud.get_user_by_email(db, email=user.email):
         raise HTTPException(
@@ -21,7 +37,19 @@ async def create_user(user: UserBase = Depends(get_user), db: Session = Depends(
     return db_user
 
 
-@router.post("/services", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/services", response_model=User, status_code=status.HTTP_201_CREATED,
+             summary="Connect to an external listing service",
+             description="Connect to an external listing service, given the service title.",
+             responses={
+                 status.HTTP_400_BAD_REQUEST: {
+                     "description": "User is already connected to that service",
+                     "content": {"application/json": {"example": {"detail": "User is already connected to that service"}}}
+                 },
+                 status.HTTP_404_NOT_FOUND: {
+                     "description": "User not found",
+                     "content": {"application/json": {"example": {"detail": "User not found"}}}
+                 }
+             })
 async def connect_to_service(
     service: Service, user: UserBase = Depends(get_user), db: Session = Depends(get_db)
 ):
@@ -48,7 +76,15 @@ async def connect_to_service(
     return ret_user
 
 
-@router.get("/users", response_model=User)
+@router.get("/users", response_model=User,
+            summary="Get user account information",
+            description="Get user account information, given the bearer token received from Firebase authentication.",
+            responses={
+                status.HTTP_404_NOT_FOUND: {
+                    "description": "User not found",
+                    "content": {"application/json": {"example": {"detail": "User not found"}}}
+                }
+            })
 def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user is None:
@@ -59,7 +95,15 @@ def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db))
     return db_user
 
 
-@router.get("/services", response_model=list[Service])
+@router.get("/services", response_model=list[Service],
+            summary="List all available listing services",
+            description="Get a list of all available listing services that can be connected to.",
+            responses={
+                status.HTTP_200_OK: {
+                    "description": "List all available listing services",
+                    "content": {"application/json": {"example": [{"title": "zooking"}, {"title": "clickandgo"}, {"title": "earthstayin"}]}}
+                }
+            })
 def get_available_services():
     available_services = [Service(title=s.value) for s in ServiceEnum]
     return available_services
