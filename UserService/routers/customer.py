@@ -14,6 +14,14 @@ router = APIRouter(dependencies=[Depends(get_user)])
              summary="Create a new user account", 
              description="Create a new user account, given the bearer token received from Firebase authentication.",
              responses={
+                 status.HTTP_201_CREATED: {
+                     "description": "Successful Response",
+                     "content": {"application/json": {"example": {
+                         "email": "user@example.com",
+                         "id": 0,
+                         "connected_services": []
+                     }}}
+                 },
                  status.HTTP_400_BAD_REQUEST: {
                      "description": "Email already registered",
                      "content": {"application/json": {"example": {"detail": "Email already registered"}}}
@@ -94,11 +102,7 @@ def read_user(user: UserBase = Depends(get_user), db: Session = Depends(get_db))
                 status.HTTP_200_OK: {
                     "description": "List all available listing services",
                     "content": {"application/json": {"example": [{"title": "zooking"}, {"title": "clickandgo"}, {"title": "earthstayin"}]}}
-                },
-                status.HTTP_404_NOT_FOUND: {
-                    "description": "No services available",
-                    "content": {"application/json": {"example": {"detail": "No services available"}}}
-                },
+                }
             })
 def get_available_services():
     available_services = [Service(title=s.value) for s in ServiceEnum]
